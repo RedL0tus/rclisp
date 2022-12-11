@@ -1,0 +1,20 @@
+[package]
+name = "rcl"
+version = "0.1.0"
+edition = "2021"
+description = "Really Crappy Lisp interpreter command line tool"
+authors = [
+    "Jiangjin Wang <jiangjiw@uci.edu>"
+]
+license = "MIT"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+log = "0.4"
+clap = { version = "4.0", features = [ "derive" ] }
+anyhow = "1.0"
+rclisp = { path = "../rclisp" }
+rustyline = "10.0"
+rustyline-derive = "0.7"
+pretty_env_logger = "0.4"

@@ -1,0 +1,14 @@
+[package]
+name = "rclisp"
+version = "0.1.0"
+edition = "2021"
+authors = [
+    "Jiangjin Wang <jiangjiw@uci.edu>"
+]
+license = "MIT"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+log = "0.4"
+lazy_static = "1.4"
