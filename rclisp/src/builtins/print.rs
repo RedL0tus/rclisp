@@ -15,13 +15,13 @@ macro_rules! create_print_struct {
 
             fn eval(&self, env: &RcEnv) -> Result<Object, EvalError> {
                 let x = rcenv_get!(env, "X")?;
-                $op(x);
-                Ok(Object::Nil)
+                $op(&x);
+                Ok(x)
             }
         }
     );
 }
 
-create_print_struct!(ObjectPrint, "print", |x: Object| println!("{}", x.print()));
-create_print_struct!(ObjectPrinc, "princ", |x: Object| print!("{}", x.print()));
+create_print_struct!(ObjectPrint, "print", |x: &Object| println!("{}", x));
+create_print_struct!(ObjectPrinc, "princ", |x: &Object| print!("{}", x.print()));
 create_print_struct!(ObjectTerpri, "terpri", |_| println!());
