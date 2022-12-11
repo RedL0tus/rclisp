@@ -58,7 +58,7 @@ fn main() -> Result<(), Error> {
         // let mut lexer = lexer.into_iter();
         while let Ok(obj) = parse(&mut lexer) {
             debug!("Parse Result: {:?}", obj);
-            debug!("Result: {}", obj.eval(&env).unwrap().print());
+            println!("{}", obj.eval(&env).unwrap().print());
         }
     }
 }
