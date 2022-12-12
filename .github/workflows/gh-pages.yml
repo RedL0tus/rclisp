@@ -1,0 +1,36 @@
+name: Build and deploy rcl-wasm to gh-pages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Install
+        working-directory: rcl-wasm/
+        run: yarn install
+
+      - name: Build
+        working-directory: rcl-wasm/
+        run: |
+          yarn autoclean
+          yarn build
+
+      - name: Deploy to GH Pages
+        if: (! github.head_ref) && (github.ref == 'refs/heads/main')
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          branch: gh-pages
+          folder: rcl-wasm/dist
+          clean: true
+          single-commit: true

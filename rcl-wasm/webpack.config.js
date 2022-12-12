@@ -37,11 +37,11 @@ module.exports = {
     maxAssetSize: 512000
   },
   plugins: [
-    // new CopyPlugin({
-    //   patterns: [
-    //     { from: "pkg", to: "static" },
-    //   ]
-    // }),
+    new CopyPlugin({
+      patterns: [
+        { from: "static/CNAME", to: "" },
+      ]
+    }),
 
     new WasmPackPlugin({
       crateDirectory: __dirname,
