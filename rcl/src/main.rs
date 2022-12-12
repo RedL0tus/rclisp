@@ -1,17 +1,15 @@
 mod helper;
 
-use log::debug;
+use log::{debug, error};
 use clap::Parser;
-use anyhow::Error;
+use anyhow::{Error, bail};
 use rustyline::Editor;
 
-use rclisp::lexer::Lexer;
-use rclisp::parse::parse;
-use rclisp::eval::Eval;
-use rclisp::builtins::generate_default_env;
+use rclisp::{interpret, generate_default_env};
 
 use std::path::PathBuf;
 use std::env;
+use std::fs;
 
 use helper::RCLReadlineHelper;
 
@@ -20,13 +18,13 @@ use helper::RCLReadlineHelper;
 struct Args {
     /// Load file into REPL environment
     #[arg(short, long, value_name = "FILE")]
-    load: Vec<PathBuf>,
+    pub load: Vec<PathBuf>,
     /// Evaluate file
     #[arg(short, long, value_name = "FILE")]
-    eval: Vec<PathBuf>,
+    pub eval: Vec<PathBuf>,
     /// Enable debug output
     #[arg(short, long, action = clap::ArgAction::Count)]
-    verbose: u8,
+    pub verbose: u8,
 }
 
 fn main() -> Result<(), Error> {
@@ -45,20 +43,39 @@ fn main() -> Result<(), Error> {
 
     debug!("args: {:?}", args);
 
+    // Initial global env
+    let env = generate_default_env();
+
+    // Load files
+    for path in args.load {
+        if let Ok(file) = fs::File::open(&path) {
+            interpret(file, &env)?;
+        } else {
+            error!("Failed to open file: {:?}", &path);
+        }
+    }
+
+    if !args.eval.is_empty() {
+        for path in args.eval {
+            if let Ok(file) = fs::File::open(&path) {
+                interpret(file, &env)?;
+            } else {
+                error!("Failed to evaluate file: {:?}", &path);
+                bail!("Failed to evaluate file: {:?}", &path);
+            }
+        }
+        return Ok(());
+    }
+
     // Editor
     let mut editor = Editor::new()?;
     editor.set_helper(Some(RCLReadlineHelper::new()));
 
-    let env = generate_default_env();
     loop {
         let input = editor.readline("* ")?;
-        let mut lexer = Lexer::new(input.as_bytes());
-        // let lexer: Vec<rclisp::lexer::Token> = lexer.collect();
-        // println!("lexer: {:?}", lexer);
-        // let mut lexer = lexer.into_iter();
-        while let Ok(obj) = parse(&mut lexer) {
-            debug!("Parse Result: {:?}", obj);
-            println!("{}", obj.eval(&env).unwrap().print());
+        match interpret(input.as_bytes(), &env) {
+            Ok(res) => println!("{}", res),
+            Err(e) => eprintln!("Encountered error: {}", e),
         }
     }
 }

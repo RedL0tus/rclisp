@@ -9,6 +9,17 @@ pub mod types;
 pub mod eval;
 pub mod builtins;
 
+use log::debug;
+
+use std::fmt;
+use std::io::Read;
+
+pub use lexer::Lexer;
+pub use eval::{Eval, EvalError};
+pub use types::Object;
+pub use env::RcEnv;
+pub use builtins::generate_default_env;
+
 // use eval::Eval;
 
 // const PROGRAM: &str = r#"(defun my-assoc (v alist)
@@ -30,3 +41,14 @@ pub mod builtins;
 //     }
 //     // println!("Env: {:?}", env);
 // }
+
+pub fn interpret<R: Read + fmt::Debug>(source: R, env: &RcEnv) -> Result<Object, EvalError> {
+    let mut lexer = Lexer::new(source);
+    let mut ret = Ok(Object::Nil);
+    while let Ok(obj) = parse::parse(&mut lexer) {
+        debug!("parse result: {} {:?}", obj, obj);
+        ret = obj.eval(&env);
+        debug!("evaluation result: {:?}", ret);
+    }
+    ret
+}

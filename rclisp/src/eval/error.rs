@@ -10,6 +10,7 @@ pub enum EvalError {
     UnmatchedNumberOfParameters(usize, usize),
     IllegalFunctionCall,
     ParameterTypeMismatched,
+    ParseError,
 }
 
 impl fmt::Display for EvalError {
@@ -19,6 +20,7 @@ impl fmt::Display for EvalError {
             Self::UnmatchedNumberOfParameters(exp, act) => write!(f, "Unmatched number of parameters, expecting {} but got {}", exp, act),
             Self::IllegalFunctionCall => write!(f, "Illegal function call"),
             Self::ParameterTypeMismatched => write!(f, "Parameter type mismatched"),
+            Self::ParseError => write!(f, "Failed to parse input"),
         }
     }
 }
