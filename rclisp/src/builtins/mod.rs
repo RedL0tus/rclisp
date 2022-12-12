@@ -18,7 +18,7 @@ pub use arithmetics::{ObjectAdd, ObjectSub, ObjectMul, ObjectDiv};
 pub use quote::ObjectQuote;
 pub use print::{ObjectPrint, ObjectPrinc, ObjectTerpri};
 pub use lambda::{ObjectDefun, ObjectLambda, ObjectFuncall};
-pub use predicates::{ObjectSymbolp, ObjectNumberp, ObjectStringp, ObjectAtom, ObjectListp, ObjectNull, ObjectEq};
+pub use predicates::{ObjectSymbolp, ObjectNumberp, ObjectStringp, ObjectAtom, ObjectListp, ObjectNull, ObjectEq, ObjectOr};
 pub use setq::ObjectSetq;
 pub use list::{ObjectCons, ObjectCar, ObjectCdr};
 pub use conditional::ObjectCond;
@@ -75,6 +75,7 @@ pub fn generate_default_env() -> RcEnv {
         ObjectListp,
         ObjectNull,
         ObjectEq,
+        ObjectOr,
         ObjectSetq,
         ObjectCons,
         ObjectCar,

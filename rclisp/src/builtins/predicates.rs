@@ -1,4 +1,6 @@
-use super::{BuiltinFunc, RcEnv, Object, EvalError, Params, UNARY_PARAMETERS, BINARY_PARAMETERS, rcenv_get, guard_obj};
+use super::{BuiltinFunc, RcEnv, Object, EvalError, Params, REST_PARAMETERS, UNARY_PARAMETERS, BINARY_PARAMETERS, rcenv_get, guard_obj};
+
+use crate::eval::Eval;
 
 macro_rules! generate_type_predicates {
     ($struct:ident, $name:expr, $type:ident) => (
@@ -107,5 +109,31 @@ impl BuiltinFunc for ObjectEq {
         } else {
             Ok(Object::Nil)
         }
+    }
+}
+
+pub struct ObjectOr;
+
+impl BuiltinFunc for ObjectOr {
+    fn get_parameters(&self) -> &Params {
+        &REST_PARAMETERS
+    }
+
+    fn get_name(&self) -> &str {
+        "or"
+    }
+
+    fn eval(&self, env: &RcEnv) -> Result<Object, EvalError> {
+        let mut lst = rcenv_get!(env, "X")?;
+        while lst != Object::Nil {
+            let (clause, cdr) = guard_obj!(lst, List)?.unpack();
+            let ret = clause.eval(env)?;
+            match &ret {
+                Object::Nil => (),
+                _ => return Ok(ret),
+            }
+            lst = cdr;
+        }
+        Ok(Object::Nil)
     }
 }
