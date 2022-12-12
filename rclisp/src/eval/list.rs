@@ -30,7 +30,7 @@ impl Eval for List {
         let (car, cdr) = self.unpack();
         trace!("car: {}, cdr: {}", car, cdr);
         let first_result = car.eval(env)?;
-        if cdr == Object::Nil {
+        if (cdr == Object::Nil) && !matches!(first_result, Object::Lambda(_)) {
             return Ok(first_result);
         }
         let lambda = if let Object::Lambda(l) = first_result {
@@ -48,7 +48,7 @@ impl Eval for List {
         let cdr = if let Object::List(l) = cdr {
             *l
         } else {
-            return Err(EvalError::IllegalFunctionCall)
+            List::EndsWith(Object::Nil)
         };
 
         // Check parameter count
