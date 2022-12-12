@@ -1,0 +1,23 @@
+{
+    "author": "Jiangjin Wang <jiangjiw@uci.edu>",
+    "name": "rcl-wasm",
+    "version": "0.1.0",
+    "license": "MIT",
+    "scripts": {
+        "build": "node_modules/.bin/webpack --config webpack.config.js"
+    },
+    "dependencies": {
+        "xterm": "^4.19.0",
+        "xterm-addon-fit": "^0.6.0"
+    },
+    "devDependencies": {
+        "@wasm-tool/wasm-pack-plugin": "^1.6.0",
+        "copy-webpack-plugin": "^11.0.0",
+        "css-loader": "^6.7.2",
+        "file-loader": "^6.2.0",
+        "style-loader": "^3.3.1",
+        "webpack": "^5.75.0",
+        "webpack-cli": "^5.0.1",
+        "webpack-dev-server": "^4.11.1"
+    }
+}
