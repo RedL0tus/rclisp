@@ -48,15 +48,15 @@ impl BuiltinFunc for ObjectNumberp {
     }
 }
 
-pub struct ObjectAtomp;
+pub struct ObjectAtom;
 
-impl BuiltinFunc for ObjectAtomp {
+impl BuiltinFunc for ObjectAtom {
     fn get_parameters(&self) -> &Params {
         &UNARY_PARAMETERS
     }
 
     fn get_name(&self) -> &str {
-        "atomp"
+        "atom"
     }
 
     fn eval(&self, env: &RcEnv) -> Result<Object, EvalError> {
