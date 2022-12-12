@@ -1,4 +1,4 @@
-use super::{BuiltinFunc, RcEnv, Object, EvalError, Params, UNARY_PARAMETERS, rcenv_get};
+use super::{BuiltinFunc, RcEnv, Object, EvalError, Params, EMPTY_PARAMETERS, UNARY_PARAMETERS, rcenv_get};
 
 macro_rules! create_print_struct {
     ($struct:ident, $name:expr, $op:expr) => (
@@ -24,4 +24,20 @@ macro_rules! create_print_struct {
 
 create_print_struct!(ObjectPrint, "print", |x: &Object| println!("{}", x));
 create_print_struct!(ObjectPrinc, "princ", |x: &Object| print!("{}", x.print()));
-create_print_struct!(ObjectTerpri, "terpri", |_| println!());
+
+pub struct ObjectTerpri;
+
+impl BuiltinFunc for ObjectTerpri {
+    fn get_parameters(&self) -> &Params {
+        &EMPTY_PARAMETERS
+    }
+
+    fn get_name(&self) -> &str {
+        "terpri"
+    }
+
+    fn eval(&self, _env: &RcEnv) -> Result<Object, EvalError> {
+        println!("");
+        Ok(Object::Nil)
+    }
+}

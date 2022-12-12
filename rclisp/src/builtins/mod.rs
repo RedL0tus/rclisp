@@ -26,6 +26,8 @@ pub use conditional::ObjectCond;
 pub use crate::{guard_obj, rcenv_get};
 
 lazy_static! {
+    static ref EMPTY_PARAMETERS: Params = Params::from(vec![]);
+    static ref REST_PARAMETERS: Params = Params::from(vec![Parameter::rest("X")]);
     static ref UNARY_PARAMETERS: Params = Params::from(vec![Parameter::normal("X")]);
     static ref BINARY_PARAMETERS: Params = Params::from(vec![Parameter::normal("X"), Parameter::normal("Y")]);
     static ref TERNARY_PARAMETERS: Params = Params::from(vec![Parameter::normal("X"), Parameter::normal("Y"), Parameter::normal("Z")]);
