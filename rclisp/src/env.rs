@@ -45,6 +45,14 @@ impl Env {
         }
     }
 
+    pub fn len(&self) -> usize {
+        self.inner.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     pub fn inherit(parent: &Rc<RefCell<Self>>) -> Self {
         Self {
             parent: Some(parent.clone()),

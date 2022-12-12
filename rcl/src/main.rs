@@ -13,6 +13,16 @@ use std::fs;
 
 use helper::RCLReadlineHelper;
 
+const BANNER: &str = r#"
+This is rcl {version}, really crappy lisp interpreter.
+An incomplete implementation of Common Lisp.
+GitHub: <https://github.com/RedL0tus/rclisp>
+
+rcl is free software, provided as is, with absolutely no warranty.
+
+{vars} variables registered.
+"#;
+
 #[derive(Clone, Debug, Parser)]
 #[command(author, version, about, long_about = "Really Crappy Lisp Interpreter")]
 struct Args {
@@ -70,6 +80,11 @@ fn main() -> Result<(), Error> {
     // Editor
     let mut editor = Editor::new()?;
     editor.set_helper(Some(RCLReadlineHelper::new()));
+
+    let banner = BANNER.replace("{version}", env!("CARGO_PKG_VERSION"));
+    let banner = banner.replace("{vars}", &env.borrow().len().to_string());
+
+    println!("{}", banner);
 
     loop {
         let input = editor.readline("* ")?;
