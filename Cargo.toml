@@ -4,3 +4,9 @@ members = [
     "rcl",
     "rcl-wasm",
 ]
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+incremental = false
