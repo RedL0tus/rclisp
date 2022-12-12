@@ -19,6 +19,8 @@ const DIGITS: &[u8; 10] = &[b'0', b'1', b'2', b'3', b'4', b'5', b'6', b'7', b'8'
 const NUM_CHARS: &[u8; 12] = &[
     b'0', b'1', b'2', b'3', b'4', b'5', b'6', b'7', b'8', b'9', b'-', b'.',
 ];
+const COMMENT: u8 = b';';
+const COMMEND_END: u8 = b'\n';
 
 pub const DEFAULT_BUF_SIZE: usize = if cfg!(target_os = "espidf") {
     512
@@ -170,10 +172,17 @@ impl<R: Read + std::fmt::Debug> Iterator for Lexer<R> {
             let mut i = 0usize;
             let mut in_string = false;
             let mut escape = false;
+            let mut in_comment = false;
             while i < available.len() {
                 let c = available[i];
                 trace!("c: {}, i: {}, in_string: {}, escape: {}, token_buf: {:?}", c as char, i, in_string, escape, token_buf);
-                if c == ESCAPE {
+                if c == COMMENT {
+                    in_comment = true;
+                } else if (c == COMMEND_END) && in_comment {
+                    in_comment = false;
+                } else if in_comment {
+                    // Do nothing
+                } else if c == ESCAPE {
                     escape = !escape;
                     token_buf.push(c);
                 } else if c == STRING {
@@ -339,5 +348,15 @@ mod test {
         let lexer = Lexer::new("()".as_bytes());
         let result = lexer.collect::<Vec<Token>>();
         assert_eq!(result, vec![Token::ParenLeft, Token::ParenRight]);
+    }
+
+    #[test]
+    fn test_lexer_comment() {
+        let lexer = Lexer::new("; test \n test".as_bytes());
+        let result = lexer.collect::<Vec<Token>>();
+        assert_eq!(result, vec![Token::Symbol("test".to_string())]);
+        let lexer = Lexer::new("; test\n;another test\ntest ;test".as_bytes());
+        let result = lexer.collect::<Vec<Token>>();
+        assert_eq!(result, vec![Token::Symbol("test".to_string())]);
     }
 }
